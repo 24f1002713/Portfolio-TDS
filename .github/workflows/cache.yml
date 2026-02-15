@@ -20,9 +20,9 @@ jobs:
           path: |
             ~/.cache
             node_modules
-          key: cache-a6c2b30-${{ runner.os }}-${{ hashFiles('**/package-lock.json', '**/yarn.lock') }}
+          key: cache-a6c2b30
           restore-keys: |
-            cache-a6c2b30-${{ runner.os }}-
+            cache-a6c2b30
 
       - name: prime-cache-a6c2b30
         run: |
