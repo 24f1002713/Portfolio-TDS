@@ -1,0 +1,43 @@
+name: CI with Caching
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Cache dependencies
+        id: cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache
+            node_modules
+          key: cache-a6c2b30-${{ runner.os }}-${{ hashFiles('**/package-lock.json', '**/yarn.lock') }}
+          restore-keys: |
+            cache-a6c2b30-${{ runner.os }}-
+
+      - name: prime-cache-a6c2b30
+        run: |
+          if [ "${{ steps.cache.outputs.cache-hit }}" == "true" ]; then
+            echo "Cache hit! Using cached dependencies."
+          else
+            echo "Cache miss! Building cache for future runs."
+          fi
+          echo "Cache hit status: ${{ steps.cache.outputs.cache-hit }}"
+
+      - name: Install dependencies (simulate)
+        run: |
+          mkdir -p ~/.cache/my-deps
+          echo "dependency-data" > ~/.cache/my-deps/data.txt
+          echo "Dependencies installed and cached for next run"
+
+      - name: Build
+        run: echo "Building the project with cached dependencies..."
